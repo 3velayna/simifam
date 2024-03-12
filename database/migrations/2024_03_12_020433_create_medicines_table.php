@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('medicines', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignId('owner_id')->constrained('users');
             $table->string('name');
             $table->integer('micrograms');
+            $table->integer('quantity');
+            $table->string('unit');
+            $table->date('expires_at');
             $table->timestamps();
         });
     }
