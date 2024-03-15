@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('medicines', function (Blueprint $table) {
+        Schema::create('active_ingredients', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignId('owner_id')->constrained('users');
+            $table->foreignUuid('medicine_id')->constrained('medicines');
             $table->string('name');
             $table->integer('quantity');
             $table->string('unit');
-            $table->date('expires_at');
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('medicines');
+        Schema::dropIfExists('active_ingredients');
     }
 };
