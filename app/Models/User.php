@@ -46,6 +46,6 @@ class User extends Authenticatable
 
         public function medicines(): HasMany
         {
-            return $this->hasMany(Medicine::class);
+            return $this->hasMany(Medicine::class,'owner_id');
         }
 }

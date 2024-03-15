@@ -6,11 +6,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Medicine extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
+
+    protected $casts = [
+        'expires_at' => 'datetime:Y-m-d',
+    ];
 
     public function owner():BelongsTo
     {
@@ -22,5 +26,5 @@ class Medicine extends Model
             return $this->hasMany(ActiveIngredient::class);
         }
 
-    protected $fillable = ['name','micrograms','quantity','unit','expires_at'];
+    protected $fillable = ['name','quantity','unit','expires_at'];
 }
