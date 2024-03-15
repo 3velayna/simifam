@@ -9,10 +9,19 @@ export interface Medicine {
     id: string;
     owner_id: number;
     name: string;
-    micrograms: number;
     quantity: number;
     unit: string;
     expires_at: string;
+    active_ingredients: ActiveIngredient[];
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ActiveIngredient {
+    id: string;
+    name: string;
+    quantity: number;
+    unit: string;
     created_at: string;
     updated_at: string;
 }
