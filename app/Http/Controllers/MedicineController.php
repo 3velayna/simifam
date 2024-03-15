@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
 use App\Models\Medicine;
+use Inertia\Inertia;
 
 class MedicineController extends Controller
 {
@@ -21,7 +22,7 @@ class MedicineController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Medicine/Create');
     }
 
     /**
@@ -29,7 +30,9 @@ class MedicineController extends Controller
      */
     public function store(StoreMedicineRequest $request)
     {
-        //
+        $attr=$request->validated();
+        $user=auth()->user();
+        $user->medicines()->create($attr);
     }
 
     /**

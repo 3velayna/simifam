@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/medicines/create', [MedicineController::class, 'create'])->name('medicines.create');
+    Route::post('/medicines', [MedicineController::class, 'store'])->name('medicines.store');
 });
 
 require __DIR__.'/auth.php';

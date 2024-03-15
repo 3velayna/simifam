@@ -11,7 +11,7 @@ class StoreMedicineRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,10 @@ class StoreMedicineRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name'=>'required|string',
+            'quantity'=>'required|integer',
+            'unit'=>'required|string',
+            'expires_at'=>'required|date'
         ];
     }
 }
