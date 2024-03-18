@@ -48,7 +48,7 @@ export default function Index({
                 {medicines.map((medicine) => (
                     <article
                         key={medicine.id}
-                        className="bg-white rounded p-3 group hover:shadow hover:bg-zinc-50"
+                        className="bg-white rounded p-3 group hover:shadow hover:bg-zinc-50 focus-within:shadow focus-within:bg-zinc-50"
                     >
                         <div className="flex justify-between">
                             <h2 className="text-xl font-bold">
@@ -79,7 +79,7 @@ export default function Index({
                                     viewBox="0 0 24 24"
                                     strokeWidth={1.5}
                                     stroke="currentColor"
-                                    className="w-5 h-5 text-accent group-hover:opacity-100 opacity-0 group-focus-within:opacity-100"
+                                    className="w-5 h-5 text-accent"
                                 >
                                     <path
                                         strokeLinecap="round"
