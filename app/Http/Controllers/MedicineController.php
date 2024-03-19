@@ -22,7 +22,7 @@ class MedicineController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Medicine/Create');
+        return Inertia::render('Medicines/Create');
     }
 
     /**
