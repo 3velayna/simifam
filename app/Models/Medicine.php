@@ -21,7 +21,7 @@ class Medicine extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function activeIngredients(): HasMany
+    public function active_ingredients(): HasMany
         {
             return $this->hasMany(ActiveIngredient::class);
         }
