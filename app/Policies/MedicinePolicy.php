@@ -29,7 +29,7 @@ class MedicinePolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->exists;
     }
 
     /**

@@ -30,6 +30,7 @@ class MedicineController extends Controller
      */
     public function store(StoreMedicineRequest $request)
     {
+        dd($request->validated());
         $attr=$request->validated();
         $user=auth()->user();
         $user->medicines()->create($attr);

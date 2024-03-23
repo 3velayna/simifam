@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Medicine;
 
 class StoreMedicineRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreMedicineRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can('create',Medicine::class);
     }
 
     /**
@@ -25,7 +26,11 @@ class StoreMedicineRequest extends FormRequest
             'name'=>'required|string',
             'quantity'=>'required|integer',
             'unit'=>'required|string',
-            'expires_at'=>'required|date'
+            'expires_at'=>'required|date',
+            'active_ingredients'=>'array',
+            'active_ingredients.*.name'=>'string|required',
+            'active_ingredients.*.quantity'=>'decimal:5,2|required',
+            'active_ingredients.*.unit'=>'string|required'
         ];
     }
 }
