@@ -6,6 +6,7 @@ use App\Http\Requests\StoreMedicineRequest;
 use App\Http\Requests\UpdateMedicineRequest;
 use App\Models\Medicine;
 use Inertia\Inertia;
+use App\Models\User;
 
 class MedicineController extends Controller
 {
@@ -30,10 +31,15 @@ class MedicineController extends Controller
      */
     public function store(StoreMedicineRequest $request)
     {
-        dd($request->validated());
         $attr=$request->validated();
+        /** @var User */
         $user=auth()->user();
-        $user->medicines()->create($attr);
+        $medicine = $user->medicines()->create($attr);
+
+        foreach ($attr['active_ingredients'] as $activeIngredient) {
+            /** Aquí viene el código para guardar cada ingrediente activo */
+            $medicine->active_ingredients()->create($activeIngredient);
+          }
     }
 
     /**

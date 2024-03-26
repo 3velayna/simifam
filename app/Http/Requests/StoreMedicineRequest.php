@@ -29,7 +29,7 @@ class StoreMedicineRequest extends FormRequest
             'expires_at'=>'required|date',
             'active_ingredients'=>'array',
             'active_ingredients.*.name'=>'string|required',
-            'active_ingredients.*.quantity'=>'decimal:5,2|required',
+            'active_ingredients.*.quantity'=>'integer|required',
             'active_ingredients.*.unit'=>'string|required'
         ];
     }
