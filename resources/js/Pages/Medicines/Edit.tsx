@@ -1,12 +1,26 @@
-import { ChangeEvent, FormEventHandler, useEffect, useState } from "react";
+import { FormEventHandler, ReactElement } from "react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import { Head, useForm } from "@inertiajs/react";
-import { ActiveIngredient, PageProps } from "@/types";
+import { PageProps, Medicine, ActiveIngredient } from "@/types";
 import Select from "@/Components/Select";
+
+type ActiveIngredientKey = keyof Omit<
+    ActiveIngredient,
+    "id" | "created_at" | "updated_at"
+>;
+
+interface ActiveIngredientRowProps {
+    activeIngredient: ActiveIngredient;
+    index: number;
+    onChange: (key: ActiveIngredientKey, value: string, index: number) => void;
+    errors: Partial<
+        Record<`active_ingredients.${number}.${ActiveIngredientKey}`, string>
+    >;
+}
 
 function getNumber(target: HTMLInputElement): number | "" {
     const value = target.valueAsNumber;
@@ -14,33 +28,104 @@ function getNumber(target: HTMLInputElement): number | "" {
     return value;
 }
 
+function ActiveIngredientRow({
+    activeIngredient,
+    index,
+    onChange,
+    errors,
+}: ActiveIngredientRowProps): ReactElement {
+    return (
+        <>
+            <tr key={index}>
+                <td>
+                    <TextInput
+                        name={`active_ingredients[${index}][name]`}
+                        className="mt-1 block w-full"
+                        value={activeIngredient?.name ?? ""}
+                        onChange={(e) =>
+                            onChange("name", e.target.value, index)
+                        }
+                    />
+                </td>
+                <td>
+                    <TextInput
+                        name={`active_ingredients[${index}][quantity]`}
+                        className="mt-1 block w-full"
+                        type="number"
+                        step={0.01}
+                        value={activeIngredient?.quantity ?? ""}
+                        onChange={(e) =>
+                            onChange(
+                                "quantity",
+                                getNumber(e.target).toString(),
+                                index,
+                            )
+                        }
+                    />
+                </td>
+                <td>
+                    <Select
+                        name={`active_ingredients[${index}][unit]`}
+                        className="mt-1 block w-full"
+                        options={{
+                            grams: "Gramos",
+                            miligrams: "Miligramos",
+                            micrograms: "Microgramos",
+                        }}
+                        value={activeIngredient?.unit ?? ""}
+                        onChange={(e) =>
+                            onChange("unit", e.target.value, index)
+                        }
+                    ></Select>
+                </td>
+            </tr>
+
+            <tr key={`${index}-errors`}>
+                <td colSpan={3}>
+                    <InputError
+                        message={errors[`active_ingredients.${index}.name`]}
+                        className="mt-2"
+                    />
+                    <InputError
+                        message={errors[`active_ingredients.${index}.quantity`]}
+                    />
+                </td>
+            </tr>
+        </>
+    );
+}
+
 export default function Create({
     auth,
-    status,
-}: PageProps<{ status?: string }>) {
-    const { data, setData, post, processing, errors } = useForm({
-        name: "",
-        quantity: 0 as number | "",
-        unit: "ampoules",
-        expires_at: "",
-        active_ingredients: [] as ActiveIngredient[],
+    medicine,
+}: PageProps<{ medicine?: Medicine }>) {
+    const { data, setData, post, put, processing, errors } = useForm({
+        name: medicine?.name ?? "",
+        quantity: (medicine?.quantity || "") as number | "",
+        unit: medicine?.unit ?? "tablets",
+        expires_at: medicine?.expires_at ?? "",
+        active_ingredients: medicine?.active_ingredients ?? [],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route("medicines.store"));
+        if (medicine) {
+            put(route("medicines.update", { medicine }));
+        } else {
+            post(route("medicines.store"));
+        }
     };
 
     function processActiveIngredientChange(
-        name: "name" | "quantity" | "unit",
+        name: ActiveIngredientKey,
         value: string,
         index: number,
     ) {
         setData((oldData) => {
             const activeIngredient = {
                 ...oldData.active_ingredients[index],
-                unit: oldData.active_ingredients[index]?.unit ?? "grams",
+                unit: oldData.active_ingredients[index]?.unit ?? "miligrams",
                 [name]: value,
             };
 
@@ -73,8 +158,6 @@ export default function Create({
         >
             <Head title="Medicina"></Head>
 
-            {status}
-
             <form className="m-4" onSubmit={submit}>
                 <div>
                     <InputLabel htmlFor="name" value="Nombre" />
@@ -99,8 +182,9 @@ export default function Create({
                         <TextInput
                             id="quantity"
                             name="quantity"
-                            type="number"
                             value={data.quantity}
+                            type="number"
+                            min={0}
                             className="mt-1 block w-full"
                             onChange={(e) =>
                                 setData("quantity", getNumber(e.target))
@@ -163,68 +247,15 @@ export default function Create({
                             {Array.from({
                                 length: data.active_ingredients.length + 1,
                             }).map((_, index) => {
-                                const activeIngredient =
-                                    data.active_ingredients[index];
-
                                 return (
-                                    <tr key={index}>
-                                        <td>
-                                            <TextInput
-                                                name={`active_ingredients[${index}][name]`}
-                                                className="mt-1 block w-full"
-                                                value={
-                                                    activeIngredient?.name ?? ""
-                                                }
-                                                onChange={(e) =>
-                                                    processActiveIngredientChange(
-                                                        "name",
-                                                        e.target.value,
-                                                        index,
-                                                    )
-                                                }
-                                            />
-                                        </td>
-                                        <td>
-                                            <TextInput
-                                                name={`active_ingredients[${index}][quantity]`}
-                                                className="mt-1 block w-full"
-                                                type="number"
-                                                step={0.01}
-                                                value={
-                                                    activeIngredient?.quantity ??
-                                                    ""
-                                                }
-                                                onChange={(e) =>
-                                                    processActiveIngredientChange(
-                                                        "quantity",
-                                                        e.target.value,
-                                                        index,
-                                                    )
-                                                }
-                                            />
-                                        </td>
-                                        <td>
-                                            <Select
-                                                name={`active_ingredients[${index}][unit]`}
-                                                className="mt-1 block w-full"
-                                                options={{
-                                                    grams: "Gramos",
-                                                    miligrams: "Miligramos",
-                                                    micrograms: "Microgramos",
-                                                }}
-                                                value={
-                                                    activeIngredient?.unit ?? ""
-                                                }
-                                                onChange={(e) =>
-                                                    processActiveIngredientChange(
-                                                        "unit",
-                                                        e.target.value,
-                                                        index,
-                                                    )
-                                                }
-                                            ></Select>
-                                        </td>
-                                    </tr>
+                                    <ActiveIngredientRow
+                                        index={index}
+                                        activeIngredient={
+                                            data.active_ingredients[index]
+                                        }
+                                        onChange={processActiveIngredientChange}
+                                        errors={errors}
+                                    />
                                 );
                             })}
                         </tbody>
