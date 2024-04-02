@@ -13,10 +13,14 @@ class MedicineController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+    public function index(){
+
+    $user = auth()->user();
+    $medicines = $user->medicines;
+            return Inertia::render('Medicines/Index',[
+                'medicines'=>$medicines,
+            ]);
+        }
 
     /**
      * Show the form for creating a new resource.
@@ -55,7 +59,7 @@ class MedicineController extends Controller
      */
     public function edit(Medicine $medicine)
     {
-        //
+        return Inertia::render('Medicines/Create');
     }
 
     /**

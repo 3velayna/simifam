@@ -27,4 +27,6 @@ class Medicine extends Model
         }
 
     protected $fillable = ['name','quantity','unit','expires_at'];
+
+    protected $with = ['active_ingredients'];
 }
