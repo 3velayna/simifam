@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Medicine;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/medicines/create', [MedicineController::class, 'create'])->name('medicines.create');
     Route::post('/medicines', [MedicineController::class, 'store'])->name('medicines.store');
+    Route::get('/medicines',[MedicineController::class,'index'])->name('medicines.index');
 });
 
 require __DIR__.'/auth.php';
