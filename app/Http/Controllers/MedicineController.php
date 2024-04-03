@@ -14,7 +14,7 @@ class MedicineController extends Controller
      * Display a listing of the resource.
      */
     public function index(){
-
+    $this->authorize('viewAny', Medicine::class);
     $user = auth()->user();
     $medicines = $user->medicines;
             return Inertia::render('Medicines/Index',[
@@ -44,6 +44,7 @@ class MedicineController extends Controller
             /** Aquí viene el código para guardar cada ingrediente activo */
             $medicine->active_ingredients()->create($activeIngredient);
           }
+        return to_route('medicines.index');
     }
 
     /**
