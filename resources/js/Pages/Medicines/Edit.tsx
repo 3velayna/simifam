@@ -3,6 +3,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
+import DangerButton from "@/Components/DangerButton";
 import TextInput from "@/Components/TextInput";
 import { Head, useForm } from "@inertiajs/react";
 import { PageProps, Medicine, ActiveIngredient } from "@/types";
@@ -107,6 +108,8 @@ export default function Create({
         active_ingredients: medicine?.active_ingredients ?? [],
     });
 
+    const deleteForm = useForm();
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
@@ -145,6 +148,10 @@ export default function Create({
                 ],
             };
         });
+    }
+
+    function deleteMedicine() {
+        deleteForm.delete(route("medicines.destroy", { medicine }));
     }
 
     return (
@@ -263,6 +270,15 @@ export default function Create({
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
+                    {medicine && (
+                        <DangerButton
+                            type="button"
+                            onClick={deleteMedicine}
+                            disabled={deleteForm.processing}
+                        >
+                            Eliminar
+                        </DangerButton>
+                    )}
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Guardar
                     </PrimaryButton>
